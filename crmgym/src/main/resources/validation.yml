@@ -1,0 +1,6 @@
+spring:
+  messages:
+    validation:
+      traineeRegistrationDTO:
+        firstName:
+          required: First name is required

@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: TRAINER-WORKLOAD-SERVICE
+
+  datasource:
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  cloud:
+    config:
+      enabled: false
+
+  jms:
+    listener:
+      auto-startup: true
+
+#  activemq:
+#    broker-url: tcp://localhost:61616
+#    user: admin
+#    password: admin
+#
+#    packages:
+#      trust-all: true
+
+jwt:
+  token:
+    header: Authorization
+
+
+
+
+security:
+  jwt:
+    secret-key: dGhpcyBpcyBteSBzZWN1cmUga2V5IGFuZCB5b3UgY2Fubm90IGhhY2sgaXQ=
+
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+server:
+  port: 8082

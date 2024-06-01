@@ -1,0 +1,87 @@
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/GymCrm_Epam
+    username: postgres
+    password: damiane1997
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  application:
+    name: APPLICATION-SERVICE
+
+  cloud:
+    config:
+      enabled: false
+
+
+  activemq:
+    broker-url: tcp://localhost:61616
+    user: admin
+    password: admin
+
+    packages:
+      trust-all: true
+
+
+
+
+
+
+
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    metrics:
+      enabled: true
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+
+
+security:
+  jwt:
+    expiration-minutes: 60
+    secret-key: dGhpcyBpcyBteSBzZWN1cmUga2V5IGFuZCB5b3UgY2Fubm90IGhhY2sgaXQ=
+
+logging:
+  level:
+    org.springframework.security: debug
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10000
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+    instances:
+      trainerWorkloadService:
+        baseConfig: default
+
+
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

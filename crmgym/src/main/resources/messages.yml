@@ -1,0 +1,5 @@
+traineeRegistrationDTO:
+  firstName:
+    notBlank: First name is required
+  lastName:
+    notBlank: Last name is required
