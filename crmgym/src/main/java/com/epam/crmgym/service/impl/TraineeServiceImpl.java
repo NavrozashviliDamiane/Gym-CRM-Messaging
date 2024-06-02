@@ -1,6 +1,5 @@
 package com.epam.crmgym.service.impl;
 
-import com.epam.crmgym.client.TrainerWorkloadClient;
 import com.epam.crmgym.config.activemq.MessageProducer;
 import com.epam.crmgym.dto.client.TrainingSessionDTO;
 import com.epam.crmgym.dto.trainee.TraineeProfileDTO;
@@ -16,10 +15,7 @@ import com.epam.crmgym.mapper.TrainingToTrainerMapper;
 import com.epam.crmgym.repository.TraineeRepository;
 import com.epam.crmgym.repository.TrainerRepository;
 import com.epam.crmgym.repository.TrainingRepository;
-import com.epam.crmgym.repository.TrainingTypeRepository;
-import com.epam.crmgym.service.AuthenticateService;
 import com.epam.crmgym.service.TraineeService;
-import com.epam.crmgym.service.TrainingService;
 import com.epam.crmgym.service.UserService;
 import com.epam.crmgym.util.trainee.GetTraineeTrainingsHelper;
 import com.epam.crmgym.util.trainee.UpdateTraineeTrainersListHelper;
@@ -38,18 +34,12 @@ public class TraineeServiceImpl implements TraineeService {
 
     private final TraineeRepository traineeRepository;
     private final UserService userService;
-    private final AuthenticateService authenticateService;
-    private final TrainingService trainingService;
-
-    private final TrainerWorkloadClient trainerWorkloadClient;
 
 
     private final TrainingToTrainerMapper trainingToTrainerMapper;
 
     private final GetTraineeTrainingsHelper getTraineeTrainingsHelper;
 
-
-    private final TrainingTypeRepository trainingTypeRepository;
 
     private final UpdateTraineeTrainersListHelper updateTraineeTrainersListHelper;
 
@@ -64,20 +54,15 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Autowired
     public TraineeServiceImpl(TraineeRepository traineeRepository, UserService userService,
-                              AuthenticateService authenticateService,
-                              TrainingService trainingService, TrainerWorkloadClient trainerWorkloadClient, TrainingRepository trainingRepository,
-                              TrainerRepository trainerRepository, TrainingTypeRepository trainingTypeRepository,
+                              TrainingRepository trainingRepository,
+                              TrainerRepository trainerRepository,
                               TrainingToTrainerMapper trainingToTrainerMapper,
                               GetTraineeTrainingsHelper getTraineeTrainingsHelper, UpdateTraineeTrainersListHelper updateTraineeTrainersListHelper,
                               MessageProducer messageProducer) {
         this.traineeRepository = traineeRepository;
         this.userService = userService;
-        this.authenticateService = authenticateService;
-        this.trainingService = trainingService;
-        this.trainerWorkloadClient = trainerWorkloadClient;
         this.trainingRepository = trainingRepository;
         this.trainerRepository = trainerRepository;
-        this.trainingTypeRepository = trainingTypeRepository;
         this.trainingToTrainerMapper = trainingToTrainerMapper;
         this.getTraineeTrainingsHelper = getTraineeTrainingsHelper;
         this.updateTraineeTrainersListHelper = updateTraineeTrainersListHelper;
@@ -220,13 +205,11 @@ public class TraineeServiceImpl implements TraineeService {
             sessionDTO.setTrainingDuration(training.getTrainingDuration());
             sessionDTO.setActionType("DELETE");
 
-            trainerWorkloadClient.manageTrainingSession(sessionDTO);
+            String token = (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+
+            messageProducer.sendMessageToTopicWithJwt(token, sessionDTO);
+
         }
-
-
-        String token = (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-
-        messageProducer.sendMessageToTopicWithJwt(token, sessionDTO);
 
 
 
