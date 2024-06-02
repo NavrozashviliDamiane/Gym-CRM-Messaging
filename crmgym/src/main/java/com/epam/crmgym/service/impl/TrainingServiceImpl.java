@@ -1,6 +1,5 @@
 package com.epam.crmgym.service.impl;
 
-import com.epam.crmgym.client.TrainerWorkloadClient;
 import com.epam.crmgym.config.activemq.MessageProducer;
 import com.epam.crmgym.dto.client.TrainingSessionDTO;
 import com.epam.crmgym.util.CircuitBreakerStateLogger;
@@ -27,7 +26,6 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainerRepository trainerRepository;
     private final MessageProducer messageProducer;
 
-    private final TrainerWorkloadClient trainerWorkloadClient;
 
     private final CircuitBreakerStateLogger circuitBreakerStateLogger;
 
@@ -35,12 +33,11 @@ public class TrainingServiceImpl implements TrainingService {
 
 
     @Autowired
-    public TrainingServiceImpl(TrainingRepository trainingRepository, TraineeRepository traineeRepository, TrainerRepository trainerRepository, MessageProducer messageProducer, TrainerWorkloadClient trainerWorkloadClient, CircuitBreakerStateLogger circuitBreakerStateLogger) {
+    public TrainingServiceImpl(TrainingRepository trainingRepository, TraineeRepository traineeRepository, TrainerRepository trainerRepository, MessageProducer messageProducer, CircuitBreakerStateLogger circuitBreakerStateLogger) {
         this.trainingRepository = trainingRepository;
         this.traineeRepository = traineeRepository;
         this.trainerRepository = trainerRepository;
         this.messageProducer = messageProducer;
-        this.trainerWorkloadClient = trainerWorkloadClient;
         this.circuitBreakerStateLogger = circuitBreakerStateLogger;
 
     }
@@ -82,8 +79,6 @@ public class TrainingServiceImpl implements TrainingService {
 
 
         log.info("Transaction ID: {} - Sending training session to TrainerWorkloadClient: {}", transactionId, sessionDTO);
-
-//        jmsProducer.sendTrainingSession(sessionDTO);
 
 
         log.info("Transaction ID: {} - ", transactionId);
